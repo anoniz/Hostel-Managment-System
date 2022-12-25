@@ -1,32 +1,19 @@
 #include<iostream>
+#include<fstream>
+
 // #include "person.h"
 
 using namespace std;
 
-// struct Seat {
-//     bool isAlloted = false;
-// };
+// Prototypes........
+bool findDucplicate(string path,string folder,unsigned No);
 
-
-// class Room {
-//     unsigned int size = 4;
-//     Seat *seat = new Seat[size];
-//     public:
-//     Room() {
-
-//         cout<<"How Many Seaters is It? \n";
-//         cin>>size;
-//     }
-// };  
-
-
-
+//////////////////////////////////////////////////////////////////
 
 struct reg {
      unsigned int No = 000; 
      char degree[50],batch[10];
 };
-
 
 class Student:public Person {
      reg regNo;
@@ -39,6 +26,7 @@ class Student:public Person {
      void setMess(bool);
      void setRoomNo(unsigned);
      void setSeatNo(unsigned);
+     void setRegNo();
      reg getRegNo();
      bool getMess();
      unsigned getRoomNo();
@@ -47,15 +35,17 @@ class Student:public Person {
 
 // SOME IMPORTANT STUDENT FUNCTIONS.......
 
+void Student::setRegNo() {
+    
+    cout<<"Please Give Reg Number, Only: ";
+    cin>>regNo.No;
+}
 void Student::setAll() {
       setPerson();
     cout<<"Hit Enter .....";
     cin.ignore();
     cin.clear();
-   
-    cout<<"Please Give Reg Number, Only: ";
-    cin>>regNo.No;
-    cin.ignore();
+
     cout<<"Please Give your Degree like BSCS: ";
     cin.getline(regNo.degree,49);
     
@@ -81,6 +71,23 @@ bool Student::getMess() {return haveMess;}
 unsigned Student::getRoomNo() {return roomNo;}
 unsigned Student::getSeatNo() {return seatNo;}
 
+/// Some Other Functions ....
+
+// bool findDucplicate(string path,string folder,unsigned No) {
+//      ifstream file;
+//      const char * fileName = (folder + path + ".dat").c_str();
+//      string p = folder + path + ".dat";
+     
+//      file.open(fileName, ios::binary);
+//      if(!file.is_open()) {cout<< "cant open file "<<endl; return true;}
+//      if(path == "Student") {
+//          Student s1;
+//          while(file.read(reinterpret_cast<char *> (&s1),sizeof(Student))) {
+//             if(s1.getRegNo().No == No) { s1.showAll(); return true;}
+//         }  return false;
+//      }
+//    return false;
+// }
 
 
 

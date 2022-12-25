@@ -15,35 +15,61 @@ unsigned writeFile(string path,string folder) {
      ofstream file;
      const char * fileName = (folder + path + ".dat").c_str();
      string p = folder + path + ".dat";
-     cout<<" i am p in write func "<<endl;    
+
      file.open(fileName,ios::app | ios::binary);
      if(!file.is_open()) { cout<<"Cant Open File "<<endl; return 0;}
-
      int size = 0;
 
        if(path == "Student"){
-        // Student s1;
-        //s1.setAll();
-         //file.write(reinterpret_cast<char*>(&s1),sizeof(s1)); 
+         Student s1;
+        
+         s1.setRegNo();
+         if(findDucplicate("Student","test/",s1.getRegNo().No)) {
+            cout<<"Reg No Already Exists... "<<endl; return size;
+         }
+         cout<<" ok fine "<<endl; return size;
+         s1.setAll();
+         file.write(reinterpret_cast<char*>(&s1),sizeof(s1)); 
          size = file.tellp()/sizeof(Student);
-         cout<<" i m size before file close "<<size<<endl;
           file.close();
          if(size <= 1) { cout<<"Only one obj in file cant sort \n"; return size;} 
-         Student Arr[size]; 
+         Student *Arr = new Student[size]; 
+         ifstream file;
+         file.open(fileName, ios::binary);
+         if(!file.is_open()) {cout<<"cant open file in read \n"; return size;}
          for(int i = 0; i < size; i++) {
-              ifstream file;
-              file.open(fileName, ios::binary);
-              if(!file.is_open()) {cout<<"cant open file in read \n"; return size;}
-              file.read(reinterpret_cast<char *>(&Arr[i]),sizeof(Student));
-         }    
-         void *any = &Arr;
+            file.read(reinterpret_cast<char *>(Arr+i),sizeof(Student));        
+         } 
+         
+         void *any = Arr;
          void *sortedArr = sort(size,path,any);
+        // return size;
          writeBackToFile(path,folder,size,sortedArr);
+         return size;
      }
+
      else if(path == "Employee") {
         Employee s1;
        // s1.set();
         file.write(reinterpret_cast<char*>(&s1),sizeof(s1));
+
+         size = file.tellp()/sizeof(Employee);
+         cout<<" i m size before file close "<<size<<endl;
+          file.close();
+         if(size <= 1) { cout<<"Only one obj in file cant sort \n"; return size;} 
+         Employee *Arr = new Employee[size]; 
+         ifstream file;
+         file.open(fileName, ios::binary);
+         if(!file.is_open()) {cout<<"cant open file in read \n"; return size;}
+         for(int i = 0; i < size; i++) {
+            file.read(reinterpret_cast<char *>(Arr+i),sizeof(Employee));        
+         } 
+         
+         void *any = Arr;
+         void *sortedArr = sort(size,path,any);
+        // return size;
+         writeBackToFile(path,folder,size,sortedArr);
+         return size;
      }
      else if(path == "HostelItems") {
         HostelItems s1;
@@ -59,104 +85,75 @@ unsigned writeFile(string path,string folder) {
 }
 
 void* sort(unsigned size , string obj,void *any) {
-    //assigning array with objs,,,,,,,
-    cout<<"inside sort function  "<<endl;
-    Student *std = new Student[size];
-    Employee *emp = new Employee[size];
-    Student *s1 = (Student *)any;
-    Employee *p1 = (Employee *)any;
-
-    for(int i = 0; i<size; i++) {
-      cout<<" i  m III "<<i<<endl;
-         std[i] = *(s1+i);
-         std[i].showAll();
-    }
-    //sorting the array of objects,,,,
+   
+    Employee *p1 = static_cast<Employee *>(any);
+    Student *s1 = static_cast<Student *>(any);
     
-    void *ptr;
+     void *ptr;
       for(int i = 0; i <size-1; i++) {
       for(int j = 0; j < size-1; j++) {
          if(obj == "Student") {
-             cout<<endl<<endl<<"i am in sort "<<endl;
-         Student temp = std[j];
-         cout<<" i m reg no i "<<std[j].getRegNo().No<<"  --- i m reg no i+ "<<std[j+1].getRegNo().No<<endl;
-         if(std[j].getRegNo().No > std[j+1].getRegNo().No) {
-            
-         std[j] = std[j+1];
-         std[j+1] = temp;
-        
+         Student temp = *(s1+j);
          
-         ptr = std;
+         if((s1+j)->getRegNo().No > (s1+j+1)->getRegNo().No) {
+            (*(s1+j)) = (*(s1+j+1));
+            (*(s1+j+1)) = (temp);
+                    
+           ptr = s1;
       }
-          else if(obj == "Employee") {
-            Employee temp = emp[j];
-            if(emp[j].getId() > emp[j+1].getId()) {
-                emp[j] = emp[j+1];
-                emp[j+1] = temp;
-                
-
-                ptr = emp;
-            }
-          }
+         //  else if(obj == "Employee") {
+         //    Employee *temp = p1+j;
+         //    if(emp[j].getId() > emp[j+1].getId()) {
+         //        emp[j] = emp[j+1];
+         //        emp[j+1] = temp;
+            
+         //        ptr = p1;
+         //    }
+         //  }
       }
-   }
-       return ptr;      
+   }     
 }  
-     return ptr;
+      return ptr;
 }
 
 void writeBackToFile(string path,string folder, unsigned size,void *sortedArr) {
       ofstream file;
-      cout<<"inside writebacl file function  "<<endl;
-      cout<<" i m  size inside write bak "<<size<<endl;
       const char * fileName = (folder + path + ".dat").c_str();
       string p = folder + path + ".dat";
-      cout<<" i m p in  write back file "<<p<<endl;
-      file.open(fileName,ios::app | ios::binary);
-      if(!file.is_open()) { cout<<"Cant Open File "<<endl; return;}
 
-     Student *s1 = (Student *)sortedArr;
-     
-      //(s1)->showAll();
-     Employee *p1 = (Employee *)sortedArr;
-     Student std[size];
-     Employee emp[size];
+      file.open("test/s1.dat", ios::binary);
+      if(!file.is_open()) { cout<<"Cant Open File "<<endl; return;}
+      Student *s1 = static_cast<Student *>(sortedArr);
+      Employee *p1 = static_cast<Employee *>(sortedArr);
+
      for(int i = 0; i < size; i++) {
-        
-        cout<<"write bakc file func   loop "<<endl;
         if(path == "Student") {
-            (s1+i)->showAll();
-            cout<<"after assin  "<<endl;
-            file.write(reinterpret_cast<char *> (&std[i]),sizeof(Student));     
+            file.write(reinterpret_cast<char *> (s1+i),sizeof(Student));     
         }
           else if(path == "Employee") {
-            emp[i] = *(p1+i);
-            file.write(reinterpret_cast<char *> (&emp[i]),sizeof(Person)); 
+            file.write(reinterpret_cast<char *> (p1+i),sizeof(Person)); 
           }
      }
 }
 
-
-unsigned readFile(string path,string folder,unsigned size) {
+unsigned readFile(string path,string folder) {
     
      ifstream file;
      const char * fileName = (folder + path + ".dat").c_str();
       string p = folder + path + ".dat";
-     cout<<" i m file name in readfile "<<p<<endl;
-     string k = fileName;
-      cout<<" i m file name in readfile "<<k<<endl;
 
      file.open(fileName, ios::binary);
      if(!file.is_open()) {
         cout<<"cant open file "<<endl;
         return 0;
      }
-     for(int i = 0; i < size; i++) {
+    
       if(path == "Student"){
          Student s1;
-        file.read(reinterpret_cast<char*>(&s1),sizeof(s1));
-        s1.showAll();
-        cout<<endl;
+       while(file.read(reinterpret_cast<char*>(&s1),sizeof(s1))) {
+            s1.showAll();
+            cout<<endl;
+       }
      }
      else if(path == "Employee") {
         Employee s1;
@@ -173,20 +170,33 @@ unsigned readFile(string path,string folder,unsigned size) {
        
         //file.read(reinterpret_cast<char*>(&s1),sizeof(s1));
      }
-       }
+       
        return 0;
 }
 
-bool findDucplicate(string path,string folder,string any,unsigned tellp) {
-    //readFile(path, folder);
-     return false;
+bool findDucplicate(string path,string folder,unsigned No) {
+     ifstream file;
+     const char * fileName = (folder + path + ".dat").c_str();
+     string p = folder + path + ".dat";
+     
+     file.open(fileName,ios::app | ios::binary);
+     if(!file.is_open()) {cout<< "cant open file "<<endl; return true;}
+     if(path == "Student") {
+         Student s1;
+         while(file.read(reinterpret_cast<char *> (&s1),sizeof(Student))) {
+            if(s1.getRegNo().No == No) {return true;}
+        } 
+           return false;
+     }
+   return false;
 }
-
 
 void updateFile(string path,string folder) {
     //  findDucplicate(path, folder);
      ofstream file;
      const char * fileName = (folder + path + ".dat").c_str();
+     string p = folder + path + ".dat";
+
      file.open(fileName,ios::app | ios::binary);
      int size;
      if(path == "Student"){
@@ -214,31 +224,44 @@ void updateFile(string path,string folder) {
      }    
 }
 
-
-
-void deleteFile(string path,string folder) {
+void deleteFile(string path,string folder,unsigned id) {
+   
     //  findDucplicate(path, folder);
-     ofstream file;
+     ifstream file;
+     ofstream file1;
      const char * fileName = (folder + path + ".dat").c_str();
-     file.open(fileName,ios::app | ios::binary);
-     int size;
+     string p = folder + path + ".dat";
+
+     file.open(fileName, ios::binary);
+     file1.open("test/temp.dat", ios::app | ios::binary);
+     int match = 0;
      if(path == "Student"){
          Student s1;
-         //s1.set();
-         file.write(reinterpret_cast<char*>(&s1),sizeof(s1)); 
-        size = file.tellp()/sizeof(Student);
-         Student Arr[size];
+
+         while(file.read(reinterpret_cast<char*>(&s1),sizeof(s1))) {
+            if(s1.getRegNo().No != id) {
+               s1.showAll();
+              file1.write(reinterpret_cast<char*>(&s1),sizeof(s1));
+            }
+         }
+         file.close();
+         if(match) {
+            ofstream file;
+            // file.open();
+         }
+        
+        // Student Arr[size];
          //void *ptr = sort(size,"Student");
      }
      else if(path == "Employee") {
         Employee s1;
        // s1.set();
-        file.write(reinterpret_cast<char*>(&s1),sizeof(s1));
+        file1.write(reinterpret_cast<char*>(&s1),sizeof(s1));
      }
      else if(path == "HostelItems") {
         HostelItems s1;
         //s1.set();
-        file.write(reinterpret_cast<char*>(&s1),sizeof(s1));
+        file1.write(reinterpret_cast<char*>(&s1),sizeof(s1));
      }
      else if(path == "MessItems") {
         // MessItems s1;
@@ -247,34 +270,56 @@ void deleteFile(string path,string folder) {
      }    
 }
 
-
-void searchFile(string path,string folder) {
+void searchById(string path,string folder,unsigned id) {
     //  findDucplicate(path, folder);
-     ofstream file;
+     ifstream file;
      const char * fileName = (folder + path + ".dat").c_str();
-     file.open(fileName,ios::app | ios::binary);
+     string p = folder + path + ".dat";
+
+     file.open("test/Student.dat", ios::binary);
      int size;
       if(path == "Student"){
-         Student s1;
-         //s1.set();
-         file.write(reinterpret_cast<char*>(&s1),sizeof(s1)); 
-         size = file.tellp()/sizeof(Student);
-         Student Arr[size];
-         //void *ptr = sort(size,"Student");
-     }
+        Student s1;
+         while(file.read(reinterpret_cast<char*>(&s1),sizeof(s1))) {
+            if(s1.getRegNo().No == 3) {s1.showAll(); return;}
+         }
+           cout<<"Student Not Found "<<endl;
+    }
+
      else if(path == "Employee") {
         Employee s1;
-       // s1.set();
-        file.write(reinterpret_cast<char*>(&s1),sizeof(s1));
-     }
-     else if(path == "HostelItems") {
-        HostelItems s1;
-        //s1.set();
-        file.write(reinterpret_cast<char*>(&s1),sizeof(s1));
-     }
-     else if(path == "MessItems") {
-        // MessItems s1;
-        // s1.set();
-        //file.write(reinterpret_cast<char*>(&s1),sizeof(s1));
-     }    
+         while(file.read(reinterpret_cast<char*>(&s1),sizeof(s1))) {
+            if(s1.getId() == 3) {s1.showEmployee(); return;}
+         }
+           cout<<"Employee Not Found "<<endl;
+    }
+
+   //   else if(path == "HostelItems") {
+   //      HostelItems s1;
+   //      //s1.set();
+   //      file.write(reinterpret_cast<char*>(&s1),sizeof(s1));
+   //   }
+   //   else if(path == "MessItems") {
+   //      // MessItems s1;
+   //      // s1.set();
+   //      //file.write(reinterpret_cast<char*>(&s1),sizeof(s1));
+   //   }    
+}
+
+
+void searchByRoom(string path,string folder,unsigned roomNo) {
+    //  findDucplicate(path, folder);
+     ifstream file;
+     const char * fileName = (folder + path + ".dat").c_str();
+     string p = folder + path + ".dat";
+
+     file.open("test/Student.dat", ios::binary);
+     int size;
+      if(path == "Student"){
+        Student s1;
+         while(file.read(reinterpret_cast<char*>(&s1),sizeof(s1))) {
+            if(s1.getRoomNo() == roomNo) {s1.showAll();}
+         }
+           cout<<"No One Found, Room is Empty "<<endl;
+    }
 }
