@@ -5,20 +5,22 @@ using namespace std;
 /////////////////////////////////////////////////////////////////////////////////
 // Prototypes..............
 
+
 void * sort(unsigned, string,void *);
 void writeBackToFile(string path,string folder, unsigned size,void *sortedArr);
 
     
 /////////////////////////////////////////////////////////////////////////////////
 unsigned writeFile(string path,string folder) {
+    int room = 200; int seat = 3;
     //  findDucplicate(path, folder);
      ofstream file;
-     const char * fileName = (folder + path + ".dat").c_str();
      string p = folder + path + ".dat";
-
+     const char * fileName = p.c_str();
+    
      file.open(fileName,ios::app | ios::binary);
      if(!file.is_open()) { cout<<"Cant Open File "<<endl; return 0;}
-     int size = 0;
+     int size = 0; int totalStudents = 0;
 
        if(path == "Student"){
          Student s1;
@@ -27,8 +29,18 @@ unsigned writeFile(string path,string folder) {
          if(findDucplicate("Student","test/",s1.getRegNo().No)) {
             cout<<"Reg No Already Exists... "<<endl; return size;
          }
-         cout<<" ok fine "<<endl; return size;
+         
          s1.setAll();
+         totalStudents = file.tellp()/sizeof(Student);
+         if(totalStudents == (room * seat)) {
+            cout<<"Ops Seems Like Hostel is Full, Try After Few Days, Thanks for Applying :) \n";
+             return totalStudents;
+          }
+            else  {   
+                    s1.setRoomNo(room - (totalStudents/seat));
+                    if(totalStudents % seat == 0) totalStudents = 0;
+                    s1.setSeatNo(seat - totalStudents);
+            }
          file.write(reinterpret_cast<char*>(&s1),sizeof(s1)); 
          size = file.tellp()/sizeof(Student);
           file.close();
@@ -50,11 +62,14 @@ unsigned writeFile(string path,string folder) {
 
      else if(path == "Employee") {
         Employee s1;
-       // s1.set();
+        s1.setID();
+          if(findDucplicate("Employee","test/",s1.getId())) {
+            cout<<"ID Already Exists... "<<endl; return size;
+         }
+        s1.setEmployee();
         file.write(reinterpret_cast<char*>(&s1),sizeof(s1));
 
          size = file.tellp()/sizeof(Employee);
-         cout<<" i m size before file close "<<size<<endl;
           file.close();
          if(size <= 1) { cout<<"Only one obj in file cant sort \n"; return size;} 
          Employee *Arr = new Employee[size]; 
@@ -88,8 +103,11 @@ void* sort(unsigned size , string obj,void *any) {
    
     Employee *p1 = static_cast<Employee *>(any);
     Student *s1 = static_cast<Student *>(any);
-    
-     void *ptr;
+    // for(int i = 0; i < 1; i++) {
+//   size = writeFile("Employee","test/");
+// }
+
+     void *ptr = any;
       for(int i = 0; i <size-1; i++) {
       for(int j = 0; j < size-1; j++) {
          if(obj == "Student") {
@@ -101,15 +119,15 @@ void* sort(unsigned size , string obj,void *any) {
                     
            ptr = s1;
       }
-         //  else if(obj == "Employee") {
-         //    Employee *temp = p1+j;
-         //    if(emp[j].getId() > emp[j+1].getId()) {
-         //        emp[j] = emp[j+1];
-         //        emp[j+1] = temp;
+          else if(obj == "Employee") {
+            Employee temp = *(p1+j);
+            if((p1+j)->getId() > (p1+j+1)->getId()) {
+               (*(p1+j)) = (*(p1+j+1));
+               (*(p1+j+1)) = (temp);
             
-         //        ptr = p1;
-         //    }
-         //  }
+                ptr = p1;
+            }
+          }
       }
    }     
 }  
@@ -118,10 +136,10 @@ void* sort(unsigned size , string obj,void *any) {
 
 void writeBackToFile(string path,string folder, unsigned size,void *sortedArr) {
       ofstream file;
-      const char * fileName = (folder + path + ".dat").c_str();
       string p = folder + path + ".dat";
-
-      file.open("test/s1.dat", ios::binary);
+     const char * fileName = p.c_str();
+    
+     file.open(fileName,ios::app | ios::binary);
       if(!file.is_open()) { cout<<"Cant Open File "<<endl; return;}
       Student *s1 = static_cast<Student *>(sortedArr);
       Employee *p1 = static_cast<Employee *>(sortedArr);
@@ -137,12 +155,14 @@ void writeBackToFile(string path,string folder, unsigned size,void *sortedArr) {
 }
 
 unsigned readFile(string path,string folder) {
-    
+    cout<<" in reed file ";
      ifstream file;
-     const char * fileName = (folder + path + ".dat").c_str();
+    
       string p = folder + path + ".dat";
+     const char * fileName = p.c_str();
+    
+     file.open(fileName,ios::app | ios::binary);
 
-     file.open(fileName, ios::binary);
      if(!file.is_open()) {
         cout<<"cant open file "<<endl;
         return 0;
@@ -157,8 +177,11 @@ unsigned readFile(string path,string folder) {
      }
      else if(path == "Employee") {
         Employee s1;
-        file.read(reinterpret_cast<char*>(&s1),sizeof(s1));
-       // return s1.getId();
+        cout<<" in iff";
+         while(file.read(reinterpret_cast<char*>(&s1),sizeof(s1))) {
+            s1.showEmployee();
+            cout<<endl;
+       }
      }
      else if(path == "HostelItems") {
         HostelItems s1;
@@ -176,8 +199,8 @@ unsigned readFile(string path,string folder) {
 
 bool findDucplicate(string path,string folder,unsigned No) {
      ifstream file;
-     const char * fileName = (folder + path + ".dat").c_str();
      string p = folder + path + ".dat";
+     const char * fileName = p.c_str();
      
      file.open(fileName,ios::app | ios::binary);
      if(!file.is_open()) {cout<< "cant open file "<<endl; return true;}
@@ -188,6 +211,13 @@ bool findDucplicate(string path,string folder,unsigned No) {
         } 
            return false;
      }
+        else if(path == "Employee") {
+         Employee p1;
+         while(file.read(reinterpret_cast<char *> (&p1),sizeof(Employee))) {
+            if(p1.getId() == No) {return true;}
+         }
+            return false;
+        }
    return false;
 }
 

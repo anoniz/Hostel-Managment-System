@@ -9,6 +9,8 @@ char role[50];
 
 public:
 unsigned getId();
+void setID();
+void setSal();
 unsigned getSal();
 string getRole();
 void setEmployee();
@@ -31,11 +33,17 @@ cin.getline(role,49);
 void Employee::showEmployee(){
 cout<<endl<<endl;
 cout<<"Employee Info........ \n\n";
+cout<<"ID : "<<ID<<endl;
 showPerson();
 cout<<"Salary : "<<salary<<endl;
 cout<<"Role : "<<role<<endl;
 }
-
+void Employee::setID() {
+    cout<<"Please Enter Your ID = "; cin>>ID;
+}
+void Employee::setSal() {
+    cout<<"Please Enter Salary = "; cin>>salary;
+}
 unsigned Employee::getId() { return ID;}
 unsigned Employee::getSal() { return salary;}
 string Employee::getRole() {string r1 = role; return role;}

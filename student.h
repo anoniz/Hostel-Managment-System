@@ -61,33 +61,18 @@ void Student::showAll() {
      showPerson();
      cout<<"The Reg No is = ";
      cout<<getRegNo().No<<"-"<<getRegNo().degree<<"-"<<getRegNo().batch<<endl;
+     cout<<"The Room No is = "<<getRoomNo()<<endl;
+     cout<<"The Seat No is = "<<getSeatNo()<<endl;
 }
 
 void Student::setMess(bool mess) {haveMess = mess;}
-void Student::setRoomNo(unsigned room) {roomNo = room;}
-void Student::setSeatNo(unsigned seat) { seatNo = seat; }
+void Student::setRoomNo(unsigned r) {roomNo = r;}
+void Student::setSeatNo(unsigned s) { seatNo = s; }
 reg Student::getRegNo() {return regNo;}
 bool Student::getMess() {return haveMess;}
 unsigned Student::getRoomNo() {return roomNo;}
 unsigned Student::getSeatNo() {return seatNo;}
 
-/// Some Other Functions ....
-
-// bool findDucplicate(string path,string folder,unsigned No) {
-//      ifstream file;
-//      const char * fileName = (folder + path + ".dat").c_str();
-//      string p = folder + path + ".dat";
-     
-//      file.open(fileName, ios::binary);
-//      if(!file.is_open()) {cout<< "cant open file "<<endl; return true;}
-//      if(path == "Student") {
-//          Student s1;
-//          while(file.read(reinterpret_cast<char *> (&s1),sizeof(Student))) {
-//             if(s1.getRegNo().No == No) { s1.showAll(); return true;}
-//         }  return false;
-//      }
-//    return false;
-// }
 
 
 

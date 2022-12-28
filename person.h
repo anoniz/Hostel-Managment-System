@@ -10,7 +10,7 @@ class Person {
     void setPerson();
       string  getName();
       string  getGender();
-     unsigned  getAge();
+     unsigned getAge();
      unsigned long getCnic();
      void showPerson();
 
