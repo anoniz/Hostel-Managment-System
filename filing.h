@@ -24,12 +24,14 @@ unsigned writeFile(string path,string folder) {
 
        if(path == "Student"){
          Student s1;
-        
+         setStd: {
          s1.setRegNo();
          if(findDucplicate("Student","test/",s1.getRegNo().No)) {
-            cout<<"Reg No Already Exists... "<<endl; return size;
+            cout<<"Reg No Already Exists... "<<endl; 
+            cout<<"Type Correct Reg No : ";
+            goto setStd;
          }
-         
+        }
          s1.setAll();
          totalStudents = file.tellp()/sizeof(Student);
          if(totalStudents == (room * seat)) {
@@ -139,7 +141,7 @@ void writeBackToFile(string path,string folder, unsigned size,void *sortedArr) {
       string p = folder + path + ".dat";
      const char * fileName = p.c_str();
     
-     file.open(fileName,ios::app | ios::binary);
+     file.open(fileName, ios::binary);
       if(!file.is_open()) { cout<<"Cant Open File "<<endl; return;}
       Student *s1 = static_cast<Student *>(sortedArr);
       Employee *p1 = static_cast<Employee *>(sortedArr);
@@ -157,9 +159,8 @@ void writeBackToFile(string path,string folder, unsigned size,void *sortedArr) {
 unsigned readFile(string path,string folder) {
     cout<<" in reed file ";
      ifstream file;
-    
       string p = folder + path + ".dat";
-     const char * fileName = p.c_str();
+      const char * fileName = p.c_str();
     
      file.open(fileName,ios::app | ios::binary);
 
@@ -270,11 +271,14 @@ void deleteFile(string path,string folder,unsigned id) {
 
          while(file.read(reinterpret_cast<char*>(&s1),sizeof(s1))) {
             if(s1.getRegNo().No != id) {
-               s1.showAll();
+               //s1.showAll();
               file1.write(reinterpret_cast<char*>(&s1),sizeof(s1));
             }
          }
+         
          file.close();
+         remove(fileName);
+         rename("test/temp.dat",fileName);
          if(match) {
             ofstream file;
             // file.open();
@@ -335,7 +339,6 @@ void searchById(string path,string folder,unsigned id) {
    //      //file.write(reinterpret_cast<char*>(&s1),sizeof(s1));
    //   }    
 }
-
 
 void searchByRoom(string path,string folder,unsigned roomNo) {
     //  findDucplicate(path, folder);

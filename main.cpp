@@ -11,18 +11,19 @@
 
 using namespace std;
 
+//void exchangeSeat(Student s1, Student s2);
 
 
 
 int main () {
     unsigned size = 2;
 
-for(int i = 0; i < 1; i++) {
-  size = writeFile("Student","test/");
-}
+// for(int i = 0; i < 2; i++) {
+//   size = writeFile("Student","test/");
+// }
 
 
-//deleteFile("Student","test/",4545);
+deleteFile("Student","test/",4545);
 //searchById("Student","test/",1);
 // cout<<endl<<"reading file" <<"i m size "<<size<<endl;
 
@@ -40,8 +41,8 @@ readFile("Student","test/");
 
 
 // cout<<"\t\t 1. I am Student... \n"<<endl;
-// cout << 
-// cout<<"\t\t 2. I am Administrator...\n"<<endl;
+
+// cout<<"\t\t 2. I am Administrator...\n" <<endl;
 // cout<<"\t\t 3. I Just Wanna Visit Hostels .....\n"<<endl;
 // cout<<"\t\t 4. Close The Program....\n"<<endl;
 
